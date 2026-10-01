@@ -19,7 +19,6 @@ import {
 
 import { mobileApps, webApps } from '@/data/projects'
 import { aiStack, type StackNode } from '@/data/ai-stack'
-import { profile } from '@/data/profile'
 
 /**
  * Home's showcase.

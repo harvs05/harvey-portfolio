@@ -8,8 +8,6 @@
 
 import {
   Sparkle,
-  Coffee,
-  Robot,
   Article,
   FilmSlate,
   UsersThree,
@@ -99,12 +97,6 @@ const GOOGLE_WORKSPACE: StackLogo = {
 /* =========================================================
    GENERAL DESCRIPTIONS
    ========================================================= */
-
-const WHAT =
-  'Practical website, design, content, and digital support that helps businesses keep their online presence organized and up to date.'
-
-const STACK =
-  'WordPress • Canva • Photoshop • CapCut • Elementor • Squarespace'
 
 /* =========================================================
    MAIN TOOLS & CAPABILITIES
