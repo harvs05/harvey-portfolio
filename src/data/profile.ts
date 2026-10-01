@@ -102,5 +102,15 @@ export const profile: Profile = {
       href: 'https://github.com/harvs05',
       iconPath: '/icons/ai/github.svg',
     },
+    {
+      label: 'Facebook profile',
+      href: 'https://www.facebook.com/hackerteam50/',
+      iconPath: '/icons/facebook.svg',
+    },
+    {
+      label: 'LinkedIn profile',
+      href: 'https://www.linkedin.com/in/harvey-varela',
+      iconPath: '/icons/linkedin.svg',
+    },
   ],
 }
