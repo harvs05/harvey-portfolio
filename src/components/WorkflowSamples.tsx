@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from '@/components/slab'
+import { mobileApps, webApps } from '@/data/projects'
 
 /**
  * WorkflowSamples
@@ -19,16 +20,12 @@ import { X } from '@/components/slab'
  * the trigger on close - the same pattern as the other in-page previews.
  */
 
-type Sample = { file: string; label: string }
+type Sample = { src: string; label: string; url?: string }
 
-const SAMPLES: Sample[] = [
-  { file: 'project-1.jpg', label: 'Project Screenshot 1' },
-  { file: 'project-2.jpg', label: 'Project Screenshot 2' },
-  { file: 'project-3.jpg', label: 'Project Screenshot 3' },
-  { file: 'project-4.jpg', label: 'Project Screenshot 4' },
-]
+const SAMPLES: Sample[] = [mobileApps[0], webApps[0], mobileApps[2], mobileApps[1]]
+  .flatMap((project) => project?.imageSrc ? [{ src: project.imageSrc, label: project.name, url: project.url }] : [])
 
-const srcOf = (s: Sample) => `/placeholders/${encodeURIComponent(s.file)}`
+const srcOf = (s: Sample) => s.src
 
 export default function WorkflowSamples() {
   const doubled = useMemo(() => [...SAMPLES, ...SAMPLES], [])
@@ -49,6 +46,7 @@ export default function WorkflowSamples() {
 
   useEffect(() => {
     if (!active) return
+    const previousOverflow = document.body.style.overflow
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') close()
     }
@@ -57,14 +55,14 @@ export default function WorkflowSamples() {
     requestAnimationFrame(() => closeRef.current?.focus())
     return () => {
       document.removeEventListener('keydown', onKey)
-      document.body.style.overflow = ''
+      document.body.style.overflow = previousOverflow
     }
   }, [active, close])
 
   return (
     <section className="wfs" id="workflow-samples" aria-labelledby="wfs-heading" data-reveal>
       <p className="wfs__caption" id="wfs-heading">
-        PLACEHOLDER - tell me what to put here: one line on what these screenshots show.
+        Website project previews for desktop and mobile, featuring WordPress and responsive web design work.
       </p>
 
       <div className="wfs__strip">
@@ -73,7 +71,7 @@ export default function WorkflowSamples() {
             const clone = i >= SAMPLES.length
             return (
               <button
-                key={`${s.file}-${i}`}
+                key={`${s.src}-${i}`}
                 type="button"
                 className="wfs__frame"
                 onClick={(e) => open(s, e.currentTarget)}
@@ -131,6 +129,7 @@ export default function WorkflowSamples() {
               <div className="wfs__imgwrap">
                 <img className="wfs__full" src={srcOf(active)} alt={`${active.label} screenshot`} />
               </div>
+              {active.url && <div className="wfs__visit"><a href={active.url} target="_blank" rel="noreferrer">Visit live website <span aria-hidden="true">↗</span></a></div>}
             </div>
           </div>,
           document.body,

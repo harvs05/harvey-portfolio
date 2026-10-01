@@ -47,7 +47,7 @@ export default function ContactGrid() {
       const [result] = await Promise.all([submitLead(lead), wait(FLIGHT_MS)])
       setStatus({ kind: 'sent', via: result.via })
     } catch (err) {
-      const note = err instanceof SubmitError ? err.message : 'That did not go through. Email me directly instead.'
+      const note = err instanceof SubmitError ? err.message : 'That did not go through. Please try again later.'
       setStatus({ kind: 'error', note })
       setShake((n) => n + 1)
     }
@@ -60,10 +60,10 @@ export default function ContactGrid() {
       <header className="pgrid__head">
         <span className="pgrid__eyebrow">FAQs / Contact</span>
         <h1 className="pgrid__title" id="contact-title">
-          Your contact headline goes here.
+          Tell me about the support you need.
         </h1>
         <p className="pgrid__lede">
-          PLACEHOLDER - tell me what to put here: one or two lines inviting people to write and saying what they get back.
+          Share a little about your website or digital project. Include your current setup and the help you are looking for.
         </p>
       </header>
 
@@ -104,10 +104,10 @@ export default function ContactGrid() {
           </ul>
 
           <div className="cgrid__direct">
-            <a className="cgrid__mail" href={`mailto:${profile.email}`}>
+            {profile.email && <a className="cgrid__mail" href={`mailto:${profile.email}`}>
               <EnvelopeSimple size={16} weight="fill" aria-hidden="true" />
               <span>{profile.email}</span>
-            </a>
+            </a>}
             <ul className="cgrid__socials" role="list">
               {profile.socials.map((s) => (
                 <li key={s.label}>
@@ -132,8 +132,8 @@ export default function ContactGrid() {
               </h2>
               <p className="cgrid__done-body">
                 {status.via === 'webhook'
-                  ? 'It is in my inbox and on my phone. You will hear back within one business day.'
-                  : 'The message is laid out and addressed. Press send there and you will hear back within one business day.'}
+                  ? 'Your message was submitted. I will review it and follow up with next steps.'
+                  : 'The message is ready in your mail app. Review it and press send to deliver it.'}
               </p>
               <button type="button" className="cgrid__again" onClick={() => setStatus({ kind: 'idle' })}>
                 Write another
@@ -197,7 +197,7 @@ export default function ContactGrid() {
                     {status.note}
                   </span>
                 ) : (
-                  <span className="cgrid__hint">Short reassurance line, e.g. your reply time.</span>
+                  <span className="cgrid__hint">Based in Cebu, Philippines · Philippine Time (UTC+8).</span>
                 )}
               </div>
             </form>

@@ -93,10 +93,89 @@
 }
 @media (max-width: 1099px) {
   .bento__card--wide { display: flex; flex-direction: column; }
+  .bento__card--wide { grid-column: 1 / -1; }
   /* The floating pill is fixed at the top of the document down here, so the
      head has to start below it - same offset home.css gives .home. */
   .pgrid { padding-top: 76px; }
   .bento__card--wide .bento__media { margin-top: clamp(8px, 1.2vh, 14px); height: 190px; }
+}
+
+.pgrid__project-preview {
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--tint);
+}
+.pgrid__project-preview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 500ms var(--ease-out);
+}
+.bento__card:hover .pgrid__project-preview img { transform: scale(1.035); }
+.pgrid__project-detail { width: 100%; }
+.pgrid__project-scroll {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+  align-items: center;
+  gap: clamp(18px, 3vw, 44px);
+  padding: clamp(18px, 3vw, 44px);
+}
+.pgrid__project-full {
+  display: block;
+  width: 100%;
+  max-height: 72vh;
+  object-fit: contain;
+  border-radius: 12px;
+  background: var(--white);
+  box-shadow: 0 20px 60px -30px rgba(6, 12, 26, 0.45);
+}
+.pgrid__project-copy h2 {
+  margin: 8px 0;
+  color: var(--navy);
+  font-size: clamp(24px, 2.3vw, 38px);
+  line-height: 1.1;
+}
+.pgrid__project-copy p { color: var(--muted); line-height: 1.65; }
+.pgrid__project-copy .pgrid__project-tagline { color: var(--navy); font-weight: 600; }
+.pgrid__project-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  margin: 20px 0 0;
+  list-style: none;
+}
+.pgrid__project-stats li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+.pgrid__project-stats strong { color: var(--navy); font-size: 13px; }
+.pgrid__project-stats span { color: var(--muted); font-size: 11px; }
+.bento__tool-chip { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 12px 16px; color: var(--navy); font-size: 13px; font-weight: 700; white-space: nowrap; }
+.bento__tool-chip img { width: 22px; height: 22px; object-fit: contain; }
+.pgrid__tool-list { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 24px 0 0; list-style: none; }
+.pgrid__tool-list li { padding: 8px 12px; border-radius: 999px; background: var(--paper); box-shadow: inset 0 0 0 1px var(--line-strong); color: var(--navy); font-size: 13px; }
+.pgrid__project-list { display: grid; gap: 12px; margin-top: 24px; }
+.pgrid__project-list section { padding: 14px 16px; border-radius: 12px; background: var(--paper); box-shadow: inset 0 0 0 1px var(--line-strong); }
+.pgrid__project-list h3 { margin: 0 0 5px; color: var(--navy); font-size: 15px; }
+.pgrid__project-list p { margin: 0; color: var(--muted); font-size: 13px; }
+.pgrid__design-gallery { display: grid; gap: 30px; margin-top: 28px; }
+.pgrid__design-gallery h3 { margin: 0 0 12px; color: var(--navy); font-size: 18px; }
+.pgrid__design-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.pgrid__design-grid figure { min-width: 0; margin: 0; overflow: hidden; border-radius: 12px; background: var(--paper); box-shadow: inset 0 0 0 1px var(--line-strong); }
+.pgrid__design-grid img { display: block; width: 100%; height: clamp(150px, 20vw, 280px); object-fit: contain; background: #f5f5f3; }
+.pgrid__design-grid figcaption { padding: 9px 11px 11px; color: var(--muted); font-size: 12px; line-height: 1.4; }
+@media (max-width: 760px) { .pgrid__design-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .pgrid__design-grid img { height: 180px; } }
+@media (max-width: 760px) {
+  .pgrid__project-scroll { grid-template-columns: minmax(0, 1fr); }
+  .pgrid__project-full { max-height: 48vh; }
 }
 
 /* Real marks in the head: white tiles stacked horizontally, overlapping. */
@@ -212,6 +291,10 @@
 }
 .bento__reel--row { display: flex; align-items: center; }
 .bento__reel--row .bento__reel-track { flex-direction: row; width: max-content; animation-name: bento-drift-left; animation-duration: 28s; }
+@media (prefers-reduced-motion: no-preference) {
+  .bento--projects .bento__card[data-id='websites'] .bento__reel-track { animation-play-state: running; }
+  .bento--projects .bento__card[data-id='tools'] .bento__reel-track { animation-play-state: running; }
+}
 .bento__shot--app { width: 150px; padding: 4px; }
 .bento__shot--app::before { display: none; }
 .bento__shot--app img { aspect-ratio: 4 / 3; object-position: center; }
@@ -304,8 +387,7 @@
 .ppanel--strip .wfs__caption { display: none; }
 .ppanel--strip .wfs { padding: 0; width: 100%; }
 .ppanel--strip [data-reveal] { opacity: 1 !important; transform: none !important; }
-.ppanel--strip .wfs__frame { pointer-events: none; width: clamp(520px, 46vw, 820px); }
-.ppanel--strip .wfs__strip:hover .wfs__track { animation-play-state: running; }
+.ppanel--strip .wfs__frame { width: clamp(520px, 46vw, 820px); }
 .ppanel--strip .wfs__strip { mask-image: none; -webkit-mask-image: none; }
 
 /* The barrel: bare on the backdrop, filling the stage. */

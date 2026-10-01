@@ -1,363 +1,115 @@
-import { Fragment, useCallback, useEffect, useRef, useState, type ComponentType, type ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState, type ComponentType } from 'react'
 import { createPortal } from 'react-dom'
-import { ArrowUpRight, X, Ticket, Robot, FlowArrow, CursorClick } from '@/components/slab'
+import { ArrowUpRight, CursorClick, X } from '@/components/slab'
 import { FlowIcon, PlanIcon, GlobeIcon, SparkIcon, DeviceIcon } from './ProjectIcons'
-import { AutomationsPanel, PlanPanel, TicketingPanel, FrameworkPanel, WorkflowPanel, BarrelPanel, AIWindow, AppsWindow } from './ProjectPanels'
-import { gymFunnel, bookingFunnel, websiteFunnel, type Funnel } from '@/data/funnels'
-import { mobileApps } from '@/data/projects'
+import { AutomationsPanel } from './ProjectPanels'
+import FunnelBarrel from './FunnelBarrel'
+import { useFunnelModal } from './FunnelModal'
+import { bookingFunnel, gymFunnel, websiteFunnel, type Funnel } from '@/data/funnels'
 import { aiStack, type StackNode } from '@/data/ai-stack'
-import { useIsPhone } from '@/hooks/useMediaQuery'
+import { mobileApps, webApps } from '@/data/projects'
 
-/**
- * Projects, as one viewport in Home's bento language: a glass panel of six
- * cards, each previewing its own body of work with a live inner track, each
- * opening the work itself in a near-fullscreen dialog (see ProjectPanels for
- * the first three; the rest are the sections the long page used to stack).
- *
- * The dialog is a portal at z 8000, under the funnel preview (9000) so the
- * barrel's own "open this page" dialog can still stack on top of it.
- */
-type Project = {
-  id: string
-  index: string
-  title: string
-  desc: string
-  Icon: ComponentType<{ size?: number }>
-  eyebrow: string
-  Section: ComponentType
-  span?: 2
-  /** Open Builds style: a small orange kicker above the title. */
-  kicker?: string
-  /** Real marks of what the work was built in; replaces the icon tile. */
-  logos?: string[]
-  Preview: ComponentType
-  /** Phone filter bucket. */
-  cat: Cat
+type DesignAsset = { src: string; label: string; group: string }
+type Project = { id: string; title: string; desc: string; Icon: ComponentType<{ size?: number }>; logos?: string[]; kicker?: string; Preview: ComponentType; detail: string; gallery?: DesignAsset[]; span?: 2 }
+const shots = [mobileApps[0]?.imageSrc, webApps[0]?.imageSrc, mobileApps[2]?.imageSrc, mobileApps[1]?.imageSrc].filter((src): src is string => Boolean(src))
+const tools: string[] = []
+const collectTools = (node: StackNode) => { if (node.stack) tools.push(...node.stack.split('•').map((item) => item.trim())); node.children?.forEach(collectTools) }
+collectTools(aiStack)
+for (const project of [...mobileApps, ...webApps]) tools.push(...project.stats.map(({ value }) => value))
+const uniqueTools = [...new Set(tools)].filter((name) => name && name !== 'Harvey Varela')
+const toolIcons: Record<string, string> = {
+  WordPress: '/icons/wordpress.svg', Elementor: '/icons/elementor-icon.svg', Canva: '/icons/canva.svg',
+  'Photoshop': '/icons/adobe-photoshop.svg', 'Adobe Photoshop': '/icons/adobe-photoshop.svg',
+  CapCut: '/icons/capcut-icon.svg', Squarespace: '/icons/squarespace-icon.svg',
 }
-
-type Cat = 'work' | 'sites' | 'apps' | 'ai'
-const FILTERS: { key: Cat | 'all'; label: string }[] = [
-  { key: 'all', label: 'All' },
-  { key: 'work', label: 'Work' },
-  { key: 'sites', label: 'Sites' },
-  { key: 'apps', label: 'Apps' },
-  { key: 'ai', label: 'AI' },
+const GRAPHIC_DESIGNS: DesignAsset[] = [
+  { src: '/graphics/social-design-mockup.png', label: 'Social media design mockup', group: 'Social media designs' },
+  { src: '/graphics/instagram-carousel-preview.png', label: 'Zesty Mediterranean Instagram carousel', group: 'Social media designs' },
+  { src: '/graphics/sugm-brand-guide-01.png', label: 'Sun Up Growth in Motion brand guide 1', group: 'Client brand guidelines' },
+  { src: '/graphics/sugm-brand-guide-02.png', label: 'Sun Up Growth in Motion brand guide 2', group: 'Client brand guidelines' },
+  { src: '/graphics/mbtd-brand-colors-fonts.jpg', label: 'MyBusinessToDo brand colors and fonts', group: 'Client brand guidelines' },
+  { src: '/graphics/pacifica-mental-health-brand-colors-fonts.png', label: 'Pacifica Mental Health brand colors and fonts', group: 'Client brand guidelines' },
+  { src: '/graphics/sundown-whisks-up-brand-guide.png', label: 'Sundown, Whisks Up brand guide', group: 'Client brand guidelines' },
+  { src: '/graphics/stepping-stone-brand-colors-fonts.png', label: 'Stepping Stone brand colors and fonts', group: 'Client brand guidelines' },
+  { src: '/graphics/golden-wrench-brand-colors-fonts.png', label: 'The Golden Wrench brand colors and fonts', group: 'Client brand guidelines' },
+  ...[
+    ['infographic-01.jpg', 'Infographic 1'], ['infographic-02.jpg', 'Infographic 2'],
+    ['infographic-03.jpg', 'Infographic 3'], ['seo-dispatch-infographic.jpg', 'SEO Dispatch infographic'],
+  ].map(([file, label]) => ({ src: `/graphics/${file}`, label, group: 'Infographics' })),
+  ...[
+    'microblog-carousel-01.jpg', 'microblog-carousel-02.jpg', 'microblog-carousel-03.jpg',
+    'microblog-carousel-04.jpg', 'microblog-carousel-05.jpg', 'microblog-carousel-06.jpg',
+  ].map((file, index) => ({ src: `/graphics/${file}`, label: `Microblog carousel slide ${index + 1}`, group: 'Microblog carousel' })),
+  { src: '/graphics/chocopie-poster.jpg', label: 'Chocopie ice cream poster', group: 'Product and promotional designs' },
+  { src: '/graphics/crunch-cookies-web-design.png', label: 'CrunchCookies web design', group: 'Product and promotional designs' },
+  { src: '/graphics/banana-meat-poster.png', label: 'Banana meat poster', group: 'Product and promotional designs' },
+  { src: '/graphics/iced-coffee-poster.jpg', label: 'Iced coffee poster', group: 'Product and promotional designs' },
+  { src: '/graphics/pizza-poster.jpg', label: 'Pizza poster', group: 'Product and promotional designs' },
+  { src: '/graphics/salad-poster.png', label: 'Salad poster', group: 'Product and promotional designs' },
+  { src: '/graphics/wireless-speaker-poster.png', label: 'Wireless speaker poster', group: 'Product and promotional designs' },
+  { src: '/graphics/msi-website-redesign.png', label: 'MSI website redesign concept', group: 'Product and promotional designs' },
+  ...Array.from({ length: 8 }, (_, index) => ({
+    src: `/graphics/youtube-thumbnail-draft-${String(index + 1).padStart(2, '0')}.jpg`,
+    label: `YouTube thumbnail design ${index + 1}`,
+    group: 'YouTube thumbnail designs',
+  })),
+]
+const CONTENT_MARKETING_ASSETS: DesignAsset[] = [
+  ...Array.from({ length: 4 }, (_, index) => ({
+    src: `/graphics/igfb-carousel-week-${String(index + 1).padStart(2, '0')}.jpg`,
+    label: `IG/FB carousel post — Week ${index + 1}`,
+    group: 'IG/FB carousel posts',
+  })),
 ]
 
-/** Example tool marks, from public/icons. Swap for what you build with. */
-const GHL = '/icons/gohighlevel.png'
-const CLAUDE_CODE = '/icons/claude-code-logo.png'
-const CODEX = '/icons/ai/codex.svg'
-const HERMES = '/icons/ai/hermes.svg'
-const PLAY = '/icons/ai/googleplay.svg'
-const CHROME = '/icons/ai/googlechrome.svg'
-const EXPO = '/icons/ai/expo.svg'
+const WEBSITE_IMAGES: Funnel[] = [...mobileApps, ...webApps].flatMap((project) => project.imageSrc ? [{
+  file: `${project.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.image`,
+  label: project.name,
+  tag: 'Website' as const,
+  desc: project.tagline,
+  imageSrc: project.imageSrc,
+  url: project.url,
+}] : [])
+const DESIGN_IMAGES: Funnel[] = [...GRAPHIC_DESIGNS, ...CONTENT_MARKETING_ASSETS].map((asset, index) => ({
+  file: `portfolio-design-${index + 1}.image`,
+  label: asset.label,
+  tag: asset.group === 'Infographics' ? 'Infographic' : asset.group === 'Social media designs' || asset.group === 'Microblog carousel' || asset.group === 'YouTube thumbnail designs' || asset.group === 'IG/FB carousel posts' ? 'Social Content' : asset.group === 'Client brand guidelines' ? 'Brand Guidelines' : 'Product Design',
+  desc: asset.group,
+  imageSrc: asset.src,
+}))
+const ALL_PAGES: Funnel[] = [...gymFunnel, ...bookingFunnel, ...websiteFunnel, ...WEBSITE_IMAGES, ...DESIGN_IMAGES]
 
-const WF_SHOTS = ['project-1.jpg', 'project-2.jpg', 'project-3.jpg', 'project-4.jpg'].map(
-  (f) => `/placeholders/${f}`,
-)
-
-const FUNNEL_SHOTS = [gymFunnel[0], bookingFunnel[0], websiteFunnel[0]].filter(Boolean)
-const thumbSrc = (f: Funnel) => `/${f.dir ?? 'funnels'}/thumbs/${f.file.replace('.html', '.jpeg')}`
-
-const APP_SHOTS = [
-  ...mobileApps.map((a) => a.imageSrc).filter((s): s is string => !!s),
-  '/placeholders/extension-1.jpg',
-  '/placeholders/extension-2.jpg',
-]
-
-const BUILD_DESC = 'PLACEHOLDER - tell me what to put here: two lines on what this project is and the result it got.'
-
-/** The three featured builds: each its own card in the stack, each its own
- *  pop-up. */
-const BUILDS: Project[] = [
-  { id: 'ticketing', cat: 'work', index: '03', kicker: 'Placeholder category', title: 'Featured Project One', desc: BUILD_DESC, Icon: () => <Ticket size={20} weight="duotone" />, logos: [GHL], eyebrow: 'Featured build', Section: TicketingPanel, Preview: () => null },
-  { id: 'framework', cat: 'ai', index: '04', kicker: 'Placeholder category', title: 'Featured Project Two', desc: BUILD_DESC, Icon: () => <Robot size={20} weight="duotone" />, logos: [CLAUDE_CODE], eyebrow: 'Featured build', Section: FrameworkPanel, Preview: () => null },
-  { id: 'workflow', cat: 'ai', index: '05', kicker: 'Placeholder category', title: 'Featured Project Three', desc: BUILD_DESC, Icon: () => <FlowArrow size={20} weight="duotone" />, logos: [CLAUDE_CODE, CODEX, HERMES], eyebrow: 'Featured build', Section: WorkflowPanel, Preview: () => null },
-]
-
-const leaves = (n: StackNode): StackNode[] => (n.children?.length ? n.children.flatMap(leaves) : [n])
-const AI_LEAVES = leaves(aiStack)
-
-/* ---------- Previews ---------- */
-
-function WorkflowsPreview() {
-  return (
-    <div className="bento__media bento__reel" aria-hidden="true">
-      <div className="bento__reel-track">
-        {[...WF_SHOTS, ...WF_SHOTS].map((src, i) => (
-          <span key={i} className="bento__shot">
-            <img src={src} alt="" loading="lazy" decoding="async" />
-          </span>
-        ))}
-      </div>
-    </div>
-  )
+function WebsitePreview() { return <div className="bento__media bento__reel" aria-hidden="true"><div className="bento__reel-track">{[...shots, ...shots].map((src, i) => <span key={`${src}-${i}`} className="bento__shot"><img src={src} alt="" loading="lazy" decoding="async" /></span>)}</div></div> }
+function DocumentPreview() { return <div className="bento__media bento__doc" aria-hidden="true"><span className="bento__doc-eyebrow">Project documents</span><span className="bento__doc-title">Website content &amp; support</span><span className="bento__doc-flow"><i>Plan</i><i>Update</i><i>Review</i><i className="is-on">Deliver</i></span><span className="bento__doc-line" /><span className="bento__doc-line bento__doc-line--short" /></div> }
+function PagesPreview() { const previews = [mobileApps[0]?.imageSrc, GRAPHIC_DESIGNS[1]?.src, GRAPHIC_DESIGNS[GRAPHIC_DESIGNS.length - 1]?.src].filter((src): src is string => Boolean(src)); return <div className="bento__media bento__fan" aria-hidden="true">{previews.map((src, i) => <span key={src} className="bento__photo bento__photo--page" style={{ ['--i' as string]: i }}><img src={src} alt="" loading="lazy" decoding="async" /></span>)}</div> }
+function SystemsPreview() { return <div className="bento__media bento__chips" aria-hidden="true">{['Website updates', 'Content support', 'Design & scheduling'].map((name) => <span key={name} className="bento__chip">{name}</span>)}</div> }
+function ToolsPreview() { return <div className="bento__media bento__reel bento__reel--row" aria-label={`Tools: ${uniqueTools.join(', ')}`}><div className="bento__reel-track">{[...uniqueTools, ...uniqueTools].map((name, i) => <span key={`${name}-${i}`} className="bento__shot bento__shot--app"><span className="bento__tool-chip">{toolIcons[name] && <img src={toolIcons[name]} alt="" />}{name}</span></span>)}</div></div> }
+function PagesPanel() {
+  const { openFull, modal } = useFunnelModal()
+  return <div className="ppanel ppanel--barrel"><FunnelBarrel funnels={ALL_PAGES} onOpen={openFull} />{modal}</div>
 }
-
-/** A paper mock of the plan document, the way SamplePlan previews it. */
-function PlanPreview() {
-  return (
-    <div className="bento__media bento__doc" aria-hidden="true">
-      <span className="bento__doc-eyebrow">Placeholder document</span>
-      <span className="bento__doc-title">Your document title here.</span>
-      <span className="bento__doc-flow">
-        <i>Step</i>
-        <i>Step</i>
-        <i>Step?</i>
-        <i className="is-on">Result</i>
-      </span>
-      <span className="bento__doc-line" />
-      <span className="bento__doc-line bento__doc-line--short" />
-    </div>
-  )
-}
-
-/** The three builds as Open Builds rows: plate, eyebrow, title, arrow. */
-function FunnelsPreview() {
-  return (
-    <div className="bento__media bento__fan" aria-hidden="true">
-      {FUNNEL_SHOTS.map((f, i) => (
-        <span key={f.file} className="bento__photo bento__photo--page" style={{ ['--i' as string]: i }}>
-          <img src={thumbSrc(f)} alt="" loading="lazy" decoding="async" />
-        </span>
-      ))}
-    </div>
-  )
-}
-
-function AIPreview() {
-  const half = Math.ceil(AI_LEAVES.length / 2)
-  const rows = [AI_LEAVES.slice(0, half), AI_LEAVES.slice(half)]
-  return (
-    <div className="bento__media bento__chips" aria-hidden="true">
-      {rows.map((row, r) => (
-        <div key={r} className="bento__chip-row" data-dir={r ? 'right' : 'left'}>
-          <div className="bento__chip-track">
-            {[...row, ...row].map((n, i) => (
-              <span key={`${n.id}-${i}`} className="bento__chip" data-status={n.status}>
-                <n.Icon size={15} weight="duotone" />
-                {n.name}
-              </span>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-function AppsPreview() {
-  return (
-    <div className="bento__media bento__reel bento__reel--row" aria-hidden="true">
-      <div className="bento__reel-track">
-        {[...APP_SHOTS, ...APP_SHOTS].map((src, i) => (
-          <span key={i} className="bento__shot bento__shot--app">
-            <img src={src} alt="" loading="lazy" decoding="async" />
-          </span>
-        ))}
-      </div>
-    </div>
-  )
-}
-
 const PROJECTS: Project[] = [
-  { id: 'workflows', cat: 'work', index: '01', title: 'Project Title', desc: 'PLACEHOLDER - tell me what to put here: what these screens show.', Icon: FlowIcon, logos: [GHL], eyebrow: 'Screenshots', Section: AutomationsPanel, span: 2, Preview: WorkflowsPreview },
-  { id: 'plan', cat: 'work', index: '02', title: 'Sample Document', desc: 'PLACEHOLDER - tell me what to put here: the document this opens.', Icon: PlanIcon, logos: [GHL], eyebrow: 'Sample document', Section: PlanPanel, Preview: PlanPreview },
-  { id: 'funnels', cat: 'sites', index: '06', title: 'Pages and sites', desc: 'PLACEHOLDER - the pages in this reel. Spin the reel.', Icon: GlobeIcon, logos: [GHL], eyebrow: 'Pages and sites', Section: BarrelPanel, Preview: FunnelsPreview },
-  { id: 'ai', cat: 'ai', index: '07', title: 'Your systems title here', desc: 'PLACEHOLDER - tell me what to put here: the systems you run.', Icon: SparkIcon, logos: [CLAUDE_CODE, CODEX, HERMES], eyebrow: 'Your systems', Section: AIWindow, Preview: AIPreview },
-  { id: 'apps', cat: 'apps', index: '08', title: 'Apps and tools', desc: 'PLACEHOLDER - tell me what to put here: the apps and tools you ship.', Icon: DeviceIcon, logos: [PLAY, EXPO, CHROME], eyebrow: 'Your apps', Section: AppsWindow, span: 2, Preview: AppsPreview },
+  { id: 'websites', title: 'Website Projects', desc: 'Website design, content updates, integrations, and ongoing support across WordPress and Squarespace.', Icon: FlowIcon, logos: ['/icons/wordpress.svg', '/icons/elementor-icon.svg'], Preview: WebsitePreview, detail: 'Selected client websites and the platforms, tools, and hosting used for each project.', span: 2 },
+  { id: 'plan', title: 'Sample Document', desc: 'Planning notes, content materials, and project support documents prepared for client work.', Icon: PlanIcon, Preview: DocumentPreview, detail: 'Examples of project documents and working materials that support website updates, content preparation, and digital marketing tasks.' },
+  { id: 'featured1', title: 'Website Support', desc: 'Page updates, responsive improvements, forms, and website integrations.', Icon: GlobeIcon, kicker: 'Website projects', Preview: () => null, detail: 'Website support across WordPress and Squarespace, including page edits, responsive layouts, forms, booking tools, and integrations.' },
+  { id: 'featured2', title: 'Graphic Design', desc: 'Infographics, YouTube thumbnails, social content, product posters, and web design concepts.', Icon: SparkIcon, kicker: 'Creative work', Preview: () => null, detail: 'A selection of graphic and promotional design work, including YouTube thumbnail designs. More designs can be added to this gallery later.', gallery: GRAPHIC_DESIGNS },
+  { id: 'featured3', title: 'Content & Marketing', desc: 'Weekly IG/FB carousel posts, social scheduling, and performance reporting.', Icon: SparkIcon, kicker: 'Digital support', Preview: () => null, detail: 'Content samples include weekly Instagram and Facebook carousel posts. More marketing support can be added as you share it.', gallery: CONTENT_MARKETING_ASSETS },
+  { id: 'pages', title: 'Pages and sites', desc: 'A rotating preview of landing pages, funnels, website samples, and selected designs.', Icon: GlobeIcon, Preview: PagesPreview, detail: 'Explore the rotating collection of landing pages, funnels, website samples, live client website previews, and graphic design images.' },
+  { id: 'systems', title: 'Your systems', desc: 'A practical workflow for website, design, content, and digital support.', Icon: SparkIcon, logos: ['/icons/wordpress.svg', '/icons/canva.svg'], Preview: SystemsPreview, detail: 'Workflows combine website updates, content support, creative production, social scheduling, and reporting based on each client’s needs.' },
+  { id: 'tools', title: 'Apps and tools', desc: 'The platforms and applications used across my website and digital support work.', Icon: DeviceIcon, logos: ['/icons/wordpress.svg', '/icons/canva.svg', '/icons/capcut-icon.svg'], Preview: ToolsPreview, detail: `Tools from my AI stack and digital workflow: ${uniqueTools.join(', ')}.` , span: 2 },
 ]
 
-/** The icon tile, or the real marks stacked horizontally in its place. */
-function Marks({ p, size = 22 }: { p: Project; size?: number }) {
-  if (!p.logos?.length) {
-    return (
-      <span className="bento__icon">
-        <p.Icon size={size} />
-      </span>
-    )
-  }
-  return (
-    <span className="bento__logos" aria-hidden="true">
-      {p.logos.map((src) => (
-        <span key={src} className="bento__logo">
-          <img src={src} alt="" width={22} height={22} decoding="async" />
-        </span>
-      ))}
-    </span>
-  )
-}
-
-/* ---------- Dialog ----------
-   A backdrop, a close button in the corner, and the work. No panel, no
-   header: each Section brings its own window (or, for the strip, none). */
-function ProjectModal({ project, onClose, children }: { project: Project; onClose: () => void; children: ReactNode }) {
+function Marks({ project }: { project: Project }) { return project.logos?.length ? <span className="bento__logos" aria-hidden="true">{project.logos.map((src) => <span key={src} className="bento__logo"><img src={src} alt="" width={22} height={22} /></span>)}</span> : <span className="bento__icon"><project.Icon size={22} /></span> }
+function ProjectModal({ project, onClose }: { project: Project; onClose: () => void }) {
   const closeRef = useRef<HTMLButtonElement>(null)
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    document.addEventListener('keydown', onKey)
-    document.body.style.overflow = 'hidden'
-    requestAnimationFrame(() => closeRef.current?.focus())
-    return () => {
-      document.removeEventListener('keydown', onKey)
-      document.body.style.overflow = ''
-    }
-  }, [onClose])
-
-  return createPortal(
-    <div
-      className="pmodal"
-      role="dialog"
-      aria-modal="true"
-      aria-label={project.title}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose()
-      }}
-    >
-      <button ref={closeRef} type="button" className="pmodal__close" onClick={onClose} aria-label="Close">
-        <X size={18} weight="bold" />
-      </button>
-      <div className="pmodal__stage">{children}</div>
-    </div>,
-    document.body,
-  )
+  useEffect(() => { const previousOverflow = document.body.style.overflow; const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape' && !document.querySelector('.funnels__modal, .wfs__modal')) onClose() }; document.addEventListener('keydown', onKey); document.body.style.overflow = 'hidden'; requestAnimationFrame(() => closeRef.current?.focus()); return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = previousOverflow } }, [onClose])
+  return createPortal(<div className="pmodal" role="dialog" aria-modal="true" aria-label={project.title} onClick={(event) => event.target === event.currentTarget && onClose()}><button ref={closeRef} type="button" className="pmodal__close" onClick={onClose} aria-label="Close"><X size={18} weight="bold" /></button><div className="pmodal__stage">{project.id === 'websites' ? <AutomationsPanel /> : project.id === 'pages' ? <PagesPanel /> : <div className="ppanel ppanel--window"><div className="ppanel__bar"><span className="ppanel__dots"><i /><i /><i /></span><span className="ppanel__url"><span className="ppanel__url-host">{project.title}</span></span></div><div className="ppanel__scroll" style={{ padding: 'clamp(24px, 5vw, 64px)' }}><span className="pgrid__eyebrow">Portfolio</span><h2>{project.title}</h2><p>{project.detail}</p>{project.id === 'tools' && <ul className="pgrid__tool-list">{uniqueTools.map((tool) => <li key={tool}>{tool}</li>)}</ul>}{project.gallery && <div className="pgrid__design-gallery">{[...new Set(project.gallery.map(({ group }) => group))].map((group) => <section key={group}><h3>{group}</h3><div className="pgrid__design-grid">{project.gallery?.filter((asset) => asset.group === group).map((asset) => <figure key={asset.src}><img src={asset.src} alt={asset.label} loading="lazy" decoding="async" /><figcaption>{asset.label}</figcaption></figure>)}</div></section>)}</div>}</div></div>}</div></div>, document.body)
 }
-
-/* ---------- The page ---------- */
 
 export default function ProjectsGrid() {
   const [open, setOpen] = useState<Project | null>(null)
-  const phone = useIsPhone()
-  const [cat, setCat] = useState<Cat | 'all'>('all')
-  const keep = (p: Project) => !phone || cat === 'all' || p.cat === cat
-  const projects = PROJECTS.filter(keep)
-  const builds = BUILDS.filter(keep)
   const triggerRef = useRef<HTMLElement | null>(null)
-
-  const show = useCallback((p: Project, el: HTMLElement) => {
-    triggerRef.current = el
-    setOpen(p)
-  }, [])
-  const close = useCallback(() => {
-    setOpen(null)
-    requestAnimationFrame(() => triggerRef.current?.focus())
-  }, [])
-
-  const stack = builds.length > 0 ? (
-    <div className="bento__stack">
-
-        {builds.map((b) => (
-
-          <button
-
-            key={b.id}
-
-            type="button"
-
-            className="bento__card bento__card--btn bento__card--build"
-
-            onClick={(e) => show(b, e.currentTarget)}
-
-            aria-haspopup="dialog"
-
-          >
-
-            <span className="bento__build-plate">
-
-              {b.logos?.length ? <img src={b.logos[0]} alt="" width={22} height={22} /> : <b.Icon />}
-
-            </span>
-
-            <span className="bento__build-text">
-
-              <span className="bento__kicker">{b.kicker}</span>
-
-              <span className="bento__build-title">{b.title}</span>
-
-              <span className="bento__build-desc">{b.desc}</span>
-
-            </span>
-
-            <span className="bento__build-arrow">
-
-              <ArrowUpRight size={13} weight="bold" aria-hidden="true" />
-
-            </span>
-
-          </button>
-
-        ))}
-
-      </div>
-  ) : null
-
-  return (
-    <section className="pgrid" aria-labelledby="projects-title">
-      <header className="pgrid__head">
-        <span className="pgrid__eyebrow">Projects</span>
-        <h1 className="pgrid__title" id="projects-title">
-          Your projects headline goes right here.
-        </h1>
-        <p className="pgrid__lede">PLACEHOLDER - tell me what to put here: one line on the work below. Open a card to see it full size.</p>
-      </header>
-
-      {phone && (
-        <div className="pfilter" role="group" aria-label="Filter projects">
-          {FILTERS.map((f) => (
-            <button
-              key={f.key}
-              type="button"
-              className="pfilter__btn"
-              aria-pressed={cat === f.key}
-              onClick={() => setCat(f.key)}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
-      )}
-
-      <div className="home__glass pgrid__glass">
-        {/* Hung on the sheet's top edge so it reads as a tag on the container,
-            not a seventh card. aria-hidden: the lede already says it. */}
-        <span className="pgrid__hint" aria-hidden="true">
-          <CursorClick size={14} weight="duotone" />
-          Click a card to open it
-        </span>
-        <div className="bento bento--projects">
-          {projects.map((p) => (
-            <Fragment key={p.id}>
-            <button
-              type="button"
-              className={`bento__card bento__card--btn${p.span === 2 ? ' bento__card--wide' : ''}`}
-              data-id={p.id}
-              onClick={(e) => show(p, e.currentTarget)}
-              aria-haspopup="dialog"
-            >
-              <span className="bento__head">
-                <Marks p={p} />
-                <span className="bento__title">{p.title}</span>
-                <span className="bento__desc">{p.desc}</span>
-                <ArrowUpRight size={15} weight="bold" aria-hidden="true" className="bento__arrow" />
-              </span>
-              <p.Preview />
-            </button>
-            {p.id === 'plan' && stack}
-            </Fragment>
-          ))}
-          {!projects.some((p) => p.id === 'plan') && stack}
-        </div>
-      </div>
-
-      {open && (
-        <ProjectModal project={open} onClose={close}>
-          <open.Section />
-        </ProjectModal>
-      )}
-    </section>
-  )
+  const close = useCallback(() => { setOpen(null); requestAnimationFrame(() => triggerRef.current?.focus()) }, [])
+  const card = (project: Project) => project.kicker ? <button key={project.id} data-id={project.id} type="button" className="bento__card bento__card--btn bento__card--build" onClick={(event) => { triggerRef.current = event.currentTarget; setOpen(project) }} aria-haspopup="dialog"><span className="bento__build-plate"><project.Icon size={20} /></span><span className="bento__build-text"><span className="bento__kicker">{project.kicker}</span><span className="bento__build-title">{project.title}</span><span className="bento__build-desc">{project.desc}</span></span><span className="bento__build-arrow"><ArrowUpRight size={13} weight="bold" /></span></button> : <button key={project.id} data-id={project.id} type="button" className={`bento__card bento__card--btn${project.span ? ' bento__card--wide' : ''}`} onClick={(event) => { triggerRef.current = event.currentTarget; setOpen(project) }} aria-haspopup="dialog"><span className="bento__head"><Marks project={project} /><span className="bento__title">{project.title}</span><span className="bento__desc">{project.desc}</span><ArrowUpRight size={15} weight="bold" aria-hidden="true" className="bento__arrow" /></span><project.Preview /></button>
+  return <section className="pgrid" aria-labelledby="projects-title"><header className="pgrid__head"><span className="pgrid__eyebrow">Projects</span><h1 className="pgrid__title" id="projects-title">Selected website and digital support work.</h1><p className="pgrid__lede">Explore website projects, design and content support, project materials, and the tools I use. Open a card for more detail.</p></header><div className="home__glass pgrid__glass"><span className="pgrid__hint" aria-hidden="true"><CursorClick size={14} weight="duotone" />Click a card to open it</span><div className="bento bento--projects">{PROJECTS.slice(0, 2).map(card)}<div className="bento__stack">{PROJECTS.slice(2, 5).map(card)}</div>{PROJECTS.slice(5).map(card)}</div></div>{open && <ProjectModal project={open} onClose={close} />}</section>
 }

@@ -74,6 +74,10 @@ export async function submitLead(lead: Lead): Promise<SubmitResult> {
     return { via: 'webhook' }
   }
 
+  if (!RECIPIENT) {
+    throw new SubmitError('The contact form is not configured yet. Please use the GitHub link to get in touch.');
+  }
+
   const subject = `Project inquiry from ${lead.firstName} ${lead.lastName}`
   const body = [`Name: ${lead.firstName} ${lead.lastName}`, `Email: ${lead.email}`, '', lead.message].join('\n')
   // encodeURIComponent on every value blocks header injection (CR/LF) and

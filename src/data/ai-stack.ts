@@ -1,18 +1,9 @@
 /**
- * The systems tree shown in the Projects "systems" pop-up (and as chips on
- * Home and in the Projects bento card).
+ * Tools & capabilities shown in the Projects "systems" pop-up
+ * and as chips on Home and in the Projects bento card.
  *
- * This file is the ONLY place node copy lives. AIStack.tsx and AIStackGrid.tsx
- * render whatever shape they find here, so swapping in content is a data edit
- * and never a JSX edit. Keep the exported names and types stable.
- *
- * Every value below is a PLACEHOLDER. Shape rules:
- * - The root is you. Its children are the categories (branches).
- * - A branch with `status` is itself a system; a branch without one is a
- *   group whose children are the systems.
- * - Status is what the thing actually does today: "Live" (in use by others),
- *   "Internal" (works, you use it), "Beta".
- * - Logo marks in AIStackGrid.tsx are keyed by the node `id` below.
+ * Customized for Harvey Varela's actual services,
+ * tools, platforms, and digital support work.
  */
 
 import {
@@ -23,7 +14,6 @@ import {
   FilmSlate,
   UsersThree,
   Database,
-  SlackLogo,
   MagnifyingGlass,
   ChatCircleDots,
   FlowArrow,
@@ -32,166 +22,443 @@ import {
   Broadcast,
   Timer,
 } from '@/components/slab'
+
 import type { Icon } from '@/components/slab'
+
 import { profile } from '@/data/profile'
 
 export type StackStatus = 'Live' | 'Internal' | 'Beta'
 
-/** A vendor mark, masked to a single ink colour so the row reads as one set
- *  rather than a rainbow of brand palettes. Only marks that already exist in
- *  public/icons are listed. */
-export type StackLogo = { src: string; name: string }
+/**
+ * A vendor/tool mark used by the systems grid.
+ */
+export type StackLogo = {
+  src: string
+  name: string
+}
 
 export type StackNode = {
   id: string
   name: string
+
   /** One plain sentence a non-technical client understands. */
   what: string
-  /** Real stack / model / where it runs. Rendered small and muted. */
+
+  /** Tools, platforms, or workflow used for the work. */
   stack?: string
+
   status?: StackStatus
-  /** Phosphor glyph for the card's mark tile. Every node has one. */
+
+  /** Icon displayed on the card. */
   Icon: Icon
+
   logos?: StackLogo[]
+
   children?: StackNode[]
 }
 
-const ANTHROPIC: StackLogo = { src: '/icons/anthropic.svg', name: 'Anthropic' }
-const OPENAI: StackLogo = { src: '/icons/openai.svg', name: 'OpenAI' }
-const SLACK: StackLogo = { src: '/icons/slack.svg', name: 'Slack' }
-const NOUS: StackLogo = { src: '/icons/nousresearch.svg', name: 'Nous Research' }
+/* =========================================================
+   TOOL / PLATFORM LOGOS
+   ========================================================= */
 
-const WHAT = 'PLACEHOLDER - tell me what to put here: one plain line on what this does.'
-const STACK = 'PLACEHOLDER - model, tools, where it runs'
+const WORDPRESS: StackLogo = {
+  src: '/icons/wordpress.svg',
+  name: 'WordPress',
+}
 
-/** Single root: you. Branches are the categories. */
+const CANVA: StackLogo = {
+  src: '/icons/canva.svg',
+  name: 'Canva',
+}
+
+const PHOTOSHOP: StackLogo = {
+  src: '/icons/adobe-photoshop.svg',
+  name: 'Adobe Photoshop',
+}
+
+const CAPCUT: StackLogo = {
+  src: '/icons/capcut-icon.svg',
+  name: 'CapCut',
+}
+
+const ELEMENTOR: StackLogo = {
+  src: '/icons/elementor-icon.svg',
+  name: 'Elementor',
+}
+
+const SQUARESPACE: StackLogo = {
+  src: '/icons/squarespace-icon.svg',
+  name: 'Squarespace',
+}
+
+const GOOGLE_WORKSPACE: StackLogo = {
+  src: '/icons/googleworkspace.svg',
+  name: 'Google Workspace',
+}
+
+/* =========================================================
+   GENERAL DESCRIPTIONS
+   ========================================================= */
+
+const WHAT =
+  'Practical website, design, content, and digital support that helps businesses keep their online presence organized and up to date.'
+
+const STACK =
+  'WordPress • Canva • Photoshop • CapCut • Elementor • Squarespace'
+
+/* =========================================================
+   MAIN TOOLS & CAPABILITIES
+   ========================================================= */
+
 export const aiStack: StackNode = {
   id: 'root',
+
   Icon: Sparkle,
+
   name: profile.name,
-  what: 'PLACEHOLDER - tell me what to put here: one line on the systems you build and run.',
-  stack: 'PLACEHOLDER - your brand',
+
+  what:
+    'WordPress website support, Canva graphic design, content creation, and digital support for businesses and organizations.',
+
+  stack:
+    'WordPress • Canva • Photoshop • CapCut • Elementor • Squarespace',
+
   children: [
-    {
-      id: 'project-a',
-      Icon: Coffee,
-      logos: [ANTHROPIC],
-      name: 'Project A',
-      what: WHAT,
-      stack: STACK,
-      status: 'Live',
-    },
+    /* =====================================================
+       WORDPRESS & WEBSITE SUPPORT
+       ===================================================== */
+
     {
       id: 'category-one',
-      Icon: Robot,
-      name: 'Category One',
-      what: 'PLACEHOLDER - tell me what to put here: what the systems in this group have in common.',
+
+      Icon: Browser,
+
+      name: 'Website Development & Support',
+
+      what:
+        'Building, updating, improving, and maintaining business websites across WordPress and Squarespace.',
+
       children: [
         {
-          id: 'project-b',
-          Icon: Article,
-          logos: [ANTHROPIC],
-          name: 'Project B',
-          what: WHAT,
-          stack: STACK,
-          status: 'Internal',
+          id: 'project-a',
+
+          Icon: Browser,
+
+          logos: [WORDPRESS, ELEMENTOR],
+
+          name: 'WordPress Website Support',
+
+          what:
+            'Updating WordPress pages, layouts, content, buttons, navigation, responsive sections, and website elements.',
+
+          stack:
+            'WordPress • Elementor • Astra • Spectra',
+
+          status: 'Live',
         },
+
+        {
+          id: 'project-b',
+
+          Icon: FlowArrow,
+
+          logos: [WORDPRESS, ELEMENTOR],
+
+          name: 'Website Design & Revamps',
+
+          what:
+            'Improving existing websites so their structure, visual presentation, user experience, and content are clearer and more consistent.',
+
+          stack:
+            'WordPress • Elementor • Astra • Spectra • CSS',
+
+          status: 'Live',
+        },
+
         {
           id: 'project-c',
-          Icon: FilmSlate,
-          logos: [OPENAI],
-          name: 'Project C',
-          what: WHAT,
-          stack: STACK,
-          status: 'Internal',
+
+          Icon: Browser,
+
+          logos: [SQUARESPACE],
+
+          name: 'Squarespace Website Support',
+
+          what:
+            'Updating Squarespace pages, services, content sections, calls to action, and other website elements.',
+
+          stack:
+            'Squarespace • Website Editing • Content Updates',
+
+          status: 'Live',
         },
+
         {
           id: 'project-d',
-          Icon: UsersThree,
-          logos: [ANTHROPIC],
-          name: 'Project D',
-          what: WHAT,
-          stack: STACK,
-          status: 'Internal',
+
+          Icon: PhoneCall,
+
+          logos: [WORDPRESS],
+
+          name: 'Forms & Integrations',
+
+          what:
+            'Connecting forms, booking tools, email platforms, payment tools, and other website integrations.',
+
+          stack:
+            'WordPress • Forms • ConvertKit • MailerLite • Integrations',
+
+          status: 'Live',
         },
       ],
     },
+
+    /* =====================================================
+       GRAPHIC DESIGN & CONTENT
+       ===================================================== */
+
     {
       id: 'category-two',
-      Icon: Database,
-      name: 'Category Two',
-      what: 'PLACEHOLDER - tell me what to put here: what the systems in this group have in common.',
+
+      Icon: Sparkle,
+
+      name: 'Graphic Design & Content',
+
+      what:
+        'Creating branded visual content for social media, marketing, business materials, and digital campaigns.',
+
       children: [
         {
           id: 'project-e',
-          Icon: SlackLogo,
-          logos: [ANTHROPIC, SLACK],
-          name: 'Project E',
-          what: WHAT,
-          stack: STACK,
+
+          Icon: FilmSlate,
+
+          logos: [CANVA, PHOTOSHOP],
+
+          name: 'Social Media Graphics',
+
+          what:
+            'Creating branded graphics and visual content for social media platforms and marketing campaigns.',
+
+          stack:
+            'Canva • Photoshop • Brand Guidelines • Social Media',
+
           status: 'Live',
         },
+
         {
           id: 'project-f',
-          Icon: MagnifyingGlass,
-          logos: [ANTHROPIC],
-          name: 'Project F',
-          what: WHAT,
-          stack: STACK,
+
+          Icon: Article,
+
+          logos: [CANVA, PHOTOSHOP],
+
+          name: 'Carousel Design',
+
+          what:
+            'Designing clear, engaging carousel graphics that organize information into easy-to-follow visual slides.',
+
+          stack:
+            'Canva • Photoshop • Social Media Content',
+
           status: 'Live',
         },
-      ],
-    },
-    {
-      id: 'category-three',
-      Icon: ChatCircleDots,
-      name: 'Category Three',
-      what: 'PLACEHOLDER - tell me what to put here: what the systems in this group have in common.',
-      children: [
+
         {
           id: 'project-g',
-          Icon: FlowArrow,
-          logos: [ANTHROPIC],
-          name: 'Project G',
-          what: WHAT,
-          stack: STACK,
+
+          Icon: UsersThree,
+
+          logos: [CANVA, PHOTOSHOP],
+
+          name: 'Brand Materials',
+
+          what:
+            'Creating branded materials such as business cards, brand guidelines, promotional graphics, and marketing assets.',
+
+          stack:
+            'Canva • Photoshop • Brand Assets',
+
           status: 'Live',
         },
+
         {
           id: 'project-h',
-          Icon: PhoneCall,
-          logos: [ANTHROPIC],
-          name: 'Project H',
-          what: WHAT,
-          stack: STACK,
-          status: 'Beta',
-        },
-        {
-          id: 'project-i',
-          Icon: Browser,
-          logos: [ANTHROPIC],
-          name: 'Project I',
-          what: WHAT,
-          stack: STACK,
+
+          Icon: FilmSlate,
+
+          logos: [CAPCUT],
+
+          name: 'Short-Form Video Editing',
+
+          what:
+            'Editing short-form social media videos, reels, clips, and promotional content for digital platforms.',
+
+          stack:
+            'CapCut • Short-Form Video • Social Media',
+
           status: 'Live',
         },
       ],
     },
+
+    /* =====================================================
+       DIGITAL & MARKETING SUPPORT
+       ===================================================== */
+
     {
-      id: 'project-j',
-      Icon: Broadcast,
-      logos: [NOUS],
-      name: 'Project J',
-      what: WHAT,
-      stack: STACK,
-      status: 'Live',
+      id: 'category-three',
+
+      Icon: Database,
+
+      name: 'Digital & Marketing Support',
+
+      what:
+        'Supporting content workflows, reporting, analytics, scheduling, and day-to-day digital operations.',
+
       children: [
         {
-          id: 'project-k',
+          id: 'project-i',
+
+          Icon: Broadcast,
+
+          logos: [GOOGLE_WORKSPACE],
+
+          name: 'Analytics & Reporting',
+
+          what:
+            'Preparing website performance reports using Google Analytics and Google Search Console data.',
+
+          stack:
+            'GA4 • Google Search Console • Performance Snapshots',
+
+          status: 'Live',
+        },
+
+        {
+          id: 'project-j',
+
           Icon: Timer,
-          name: 'Project K',
-          what: WHAT,
-          stack: STACK,
+
+          logos: [CANVA],
+
+          name: 'Social Media Scheduling',
+
+          what:
+            'Preparing and scheduling approved social media content for consistent publishing.',
+
+          stack:
+            'Publer • Canva • Social Media Content',
+
+          status: 'Live',
+        },
+
+        {
+          id: 'project-k',
+
+          Icon: ChatCircleDots,
+
+          logos: [GOOGLE_WORKSPACE],
+
+          name: 'Content Support',
+
+          what:
+            'Organizing, updating, and preparing website and marketing content based on client requirements.',
+
+          stack:
+            'Google Workspace • WordPress • Content Documents',
+
+          status: 'Live',
+
+          children: [
+            {
+              id: 'project-l',
+
+              Icon: Article,
+
+              logos: [WORDPRESS],
+
+              name: 'Website Content Updates',
+
+              what:
+                'Updating website copy, headings, calls to action, service information, and supporting page content.',
+
+              stack:
+                'WordPress • Google Docs • Content Updates',
+
+              status: 'Live',
+            },
+          ],
+        },
+      ],
+    },
+
+    /* =====================================================
+       TOOLS & WORKFLOW
+       ===================================================== */
+
+    {
+      id: 'category-four',
+
+      Icon: MagnifyingGlass,
+
+      name: 'Tools & Workflow',
+
+      what:
+        'A practical toolkit used to manage website, design, content, and digital marketing tasks.',
+
+      children: [
+        {
+          id: 'project-m',
+
+          Icon: Browser,
+
+          logos: [WORDPRESS, ELEMENTOR],
+
+          name: 'Website Tools',
+
+          what:
+            'Working with website builders and content management platforms to maintain and improve client websites.',
+
+          stack:
+            'WordPress • Elementor • Astra • Spectra • Squarespace',
+
+          status: 'Live',
+        },
+
+        {
+          id: 'project-n',
+
+          Icon: Sparkle,
+
+          logos: [CANVA, PHOTOSHOP, CAPCUT],
+
+          name: 'Creative Tools',
+
+          what:
+            'Using visual design and video editing tools to create professional marketing and social media content.',
+
+          stack:
+            'Canva • Photoshop • CapCut',
+
+          status: 'Live',
+        },
+
+        {
+          id: 'project-o',
+
+          Icon: Database,
+
+          logos: [GOOGLE_WORKSPACE],
+
+          name: 'Business & Productivity Tools',
+
+          what:
+            'Using digital productivity and collaboration tools to organize client work and support marketing operations.',
+
+          stack:
+            'Google Workspace • Google Drive • Reporting Tools',
+
           status: 'Live',
         },
       ],

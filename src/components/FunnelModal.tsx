@@ -35,6 +35,7 @@ export function useFunnelModal() {
   // Escape to dismiss, scroll locked while open, focus moved into the dialog.
   useEffect(() => {
     if (!funnel) return
+    const previousOverflow = document.body.style.overflow
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') close()
     }
@@ -43,8 +44,7 @@ export function useFunnelModal() {
     requestAnimationFrame(() => closeRef.current?.focus())
     return () => {
       document.removeEventListener('keydown', onKey)
-      // Always clear to default - never restore a possibly stale 'hidden'.
-      document.body.style.overflow = ''
+      document.body.style.overflow = previousOverflow
     }
   }, [funnel, close])
 
@@ -68,8 +68,8 @@ export function useFunnelModal() {
               <span className="funnels__modal-light funnels__modal-light--green" />
             </div>
             <div className="funnels__modal-url" aria-hidden="true">
-              <span className="funnels__modal-url-scheme">yoursite.com</span>
-              <span className="funnels__modal-url-path">{fullSrc(funnel)}</span>
+              <span className="funnels__modal-url-scheme">{funnel.imageSrc ? 'Portfolio' : 'Preview'}</span>
+              <span className="funnels__modal-url-path">{funnel.url ?? (funnel.imageSrc ? funnel.label : fullSrc(funnel))}</span>
             </div>
             <div className="funnels__modal-actions">
               <button
@@ -83,12 +83,7 @@ export function useFunnelModal() {
               </button>
             </div>
           </div>
-          <iframe
-            className="funnels__modal-iframe"
-            src={fullSrc(funnel)}
-            title={funnel.label}
-            sandbox="allow-same-origin allow-forms allow-scripts allow-popups"
-          />
+          {funnel.imageSrc ? <div className="funnels__modal-image-wrap"><img className="funnels__modal-image" src={funnel.imageSrc} alt={funnel.label} />{funnel.url && <a className="funnels__modal-image-link" href={funnel.url} target="_blank" rel="noreferrer">Visit live website <span aria-hidden="true">↗</span></a>}</div> : <iframe className="funnels__modal-iframe" src={fullSrc(funnel)} title={funnel.label} sandbox="allow-same-origin allow-forms allow-scripts allow-popups" />}
         </div>
       </div>,
       document.body,

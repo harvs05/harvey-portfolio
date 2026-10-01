@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { SealCheck, CaretRight, Play, Stack, Coffee } from '@/components/slab'
+import { SealCheck, CaretRight, Stack, Coffee } from '@/components/slab'
 import { profile } from '@/data/profile'
 import QuickMenu from './QuickMenu'
 
@@ -10,8 +10,8 @@ import QuickMenu from './QuickMenu'
  *                (theme + accessibility) - the rail's identity block, laid flat
  *   HomeStats    three proof facts (profile.stats), each named by a glyph so
  *                it reads at a glance
- *   HomeExplore  one shelf card per rail view in a snap row, then the first
- *                testimonial as a video stage
+ *   HomeExplore  one shelf card per portfolio view in a snap row, then a
+ *                featured website project
  */
 
 export function HomeProfile() {
@@ -47,11 +47,11 @@ export function HomeStats() {
 }
 
 const TILES = [
-  { n: '01', label: 'Projects', to: '/projects', title: 'PLACEHOLDER - projects headline', desc: 'Tell me what to put here.', img: '/placeholders/project-1.jpg' },
-  { n: '02', label: 'Services', to: '/services', title: 'PLACEHOLDER - services headline', desc: 'Tell me what to put here.', Icon: Stack },
-  { n: '03', label: 'Showcase', to: '/showcase', title: 'PLACEHOLDER - your flagship', desc: 'Tell me what to put here.', Icon: Coffee, accent: true },
-  { n: '04', label: 'Testimonials', to: '/testimonials', title: 'PLACEHOLDER - testimonials headline', desc: 'Tell me what to put here.', img: '/placeholders/testimonial-1.jpg' },
-  { n: '05', label: 'About', to: '/about', title: `Hi, I'm ${profile.firstName}.`, desc: 'PLACEHOLDER - one line about you.', img: profile.avatarSrc },
+  { n: '01', label: 'Projects', to: '/projects', title: 'Selected website projects', desc: 'Website design and support work.', img: '/placeholders/golden-wrench.jpg' },
+  { n: '02', label: 'Services', to: '/services', title: 'Website & digital support', desc: 'WordPress, Canva, and content support.', Icon: Stack },
+  { n: '03', label: 'Website Gallery', to: '/showcase', title: 'Responsive website previews', desc: 'See selected work on desktop and mobile.', Icon: Coffee, accent: true },
+  { n: '04', label: 'Client Work', to: '/testimonials', title: 'Project notes', desc: 'A closer look at selected projects.', img: '/placeholders/pmh.png' },
+  { n: '05', label: 'About', to: '/about', title: `Hi, I'm ${profile.firstName}.`, desc: 'WordPress Developer and Digital Designer.', img: profile.avatarSrc },
 ] as const
 
 export function HomeExplore() {
@@ -83,20 +83,20 @@ export function HomeExplore() {
       <div className="hsec">
         <h2 className="hsec__title">
           <Link to="/testimonials" className="hsec__link">
-            What clients say
+          Selected client work
             <CaretRight size={16} weight="bold" aria-hidden="true" />
           </Link>
         </h2>
       </div>
-      <Link to="/testimonials" className="hproof" aria-label="Client testimonial. PLACEHOLDER - a one-line teaser for your best testimonial.">
+      <Link to="/projects" className="hproof" aria-label="The Golden Wrench Mobile website project">
         <span className="hproof__stage">
-          <img src="/placeholders/testimonial-1.jpg" alt="" loading="lazy" />
-          <span className="hproof__play" aria-hidden="true"><Play size={20} weight="fill" /></span>
-          <span className="hproof__dur" aria-hidden="true">0:00</span>
+          <img src="/placeholders/golden-wrench.jpg" alt="" loading="lazy" />
+          <span className="hproof__play" aria-hidden="true"><CaretRight size={18} weight="bold" /></span>
+          <span className="hproof__dur" aria-hidden="true">Website</span>
         </span>
         <span className="hproof__copy">
-          <span className="hproof__title">PLACEHOLDER - tell me what to put here: a one-line teaser for your best testimonial.</span>
-          <span className="hproof__meta">PLACEHOLDER - client role</span>
+          <span className="hproof__title">The Golden Wrench Mobile</span>
+          <span className="hproof__meta">WordPress · Responsive design</span>
         </span>
       </Link>
     </>

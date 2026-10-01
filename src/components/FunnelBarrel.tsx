@@ -23,6 +23,7 @@ type Props = {
 }
 
 function thumbSrc(f: Funnel) {
+  if (f.imageSrc) return f.imageSrc
   const dir = f.dir ?? 'funnels'
   return `/${dir}/thumbs/${f.file.replace('.html', '.jpeg')}`
 }

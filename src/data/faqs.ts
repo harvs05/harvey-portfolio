@@ -9,22 +9,22 @@ export type QA = { q: string; a: string }
 export const FAQS: QA[] = [
   {
     q: 'What do you do?',
-    a: 'PLACEHOLDER - tell me what to put here: the kinds of work you take on, and who it is usually for.',
+    a: 'I provide WordPress website support, responsive page updates, Canva graphics, and digital content support for businesses.',
   },
   {
     q: 'How fast can you start?',
-    a: 'PLACEHOLDER - tell me what to put here: your usual lead time for small fixes vs. larger projects, and your working hours.',
+    a: 'Timing depends on the project scope and my availability. Share what you need and your preferred timeline so we can discuss fit.',
   },
   {
     q: 'How much do you charge?',
-    a: 'PLACEHOLDER - tell me what to put here: how you price (hourly, per project, retainer) and how a quote is put together.',
+    a: 'Pricing depends on the scope and deliverables. Get in touch with a project outline to discuss a quote.',
   },
   {
     q: 'Where are you based?',
-    a: 'PLACEHOLDER - tell me what to put here: your location or timezone, and which client timezones you overlap with.',
+    a: 'I am based in Cebu, Philippines (Philippine Time, UTC+8). Please include your timezone when you get in touch to discuss scheduling.',
   },
   {
     q: 'What happens after I write?',
-    a: 'PLACEHOLDER - tell me what to put here: how fast you reply and what the next step looks like.',
+    a: 'I will review your message and follow up to discuss the project scope and next steps.',
   },
 ]

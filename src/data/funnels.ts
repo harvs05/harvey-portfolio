@@ -1,10 +1,14 @@
-export type FunnelTag = 'Lead Capture' | 'Booking' | 'Checkout' | 'Website'
+export type FunnelTag = 'Lead Capture' | 'Booking' | 'Checkout' | 'Website' | 'Graphic Design' | 'Infographic' | 'Social Content' | 'Product Design' | 'Brand Guidelines'
 
 export type Funnel = {
   file: string
   label: string
   tag: FunnelTag
   desc: string
+  /** Image-backed item for mixed website/design galleries. */
+  imageSrc?: string
+  /** Live URL for website examples. */
+  url?: string
   /** Public subfolder the HTML + thumbnail live under. Default 'funnels'. */
   dir?: 'funnels' | 'samples'
 }
@@ -56,4 +60,9 @@ export const tagColors: Record<FunnelTag, string> = {
   Booking: '#ec4899',
   Checkout: '#f59e0b',
   Website: '#FF7A1A',
+  'Graphic Design': '#0EA5E9',
+  Infographic: '#14B8A6',
+  'Social Content': '#8B5CF6',
+  'Product Design': '#F59E0B',
+  'Brand Guidelines': '#0F766E',
 }

@@ -1,9 +1,8 @@
 import ProjectsGrid from '@/components/ProjectsGrid'
 
 /**
- * Projects is a fixed viewport like Home: six cards, one per body of work,
- * each opening the real section in a dialog. No ViewShell - there is no
- * scrolling stack here and the reveal hooks would have nothing to reveal.
+ * Projects is a fixed viewport like Home. The selected website gallery opens
+ * in a dialog, keeping the existing page interaction and layout.
  */
 export default function ProjectsView() {
   return <ProjectsGrid />

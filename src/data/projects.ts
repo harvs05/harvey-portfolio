@@ -1,14 +1,15 @@
-export type AppStat = { value: string; label: string }
+export type AppStat = {
+  value: string
+  label: string
+}
 
 export type AppProject = {
   name: string
   tagline: string
   description: string
-  /** Optional - omit for gradient placeholder cards */
+  url?: string
   imageSrc?: string
-  /** CSS object-position override. Defaults to 'top center'. */
   imagePosition?: string
-  /** External brand color - not a site token. Passed via --app-color inline prop. */
   accentColor: string
   stats: AppStat[]
   badge: string
@@ -17,82 +18,79 @@ export type AppProject = {
 /** @deprecated use AppProject */
 export type MobileApp = AppProject
 
-/**
- * Your apps. Every value is a PLACEHOLDER. Screenshots live in
- * public/placeholders/ - swap in your own (960x514 works well).
- */
-const STATS: AppStat[] = [
-  { value: '0', label: 'Stat one' },
-  { value: '0', label: 'Stat two' },
-  { value: '0', label: 'Stat three' },
-]
-
-const DESC = 'PLACEHOLDER - tell me what to put here: what the app does, who it is for, and where it is published.'
-
+/** Portfolio work included in the project files and supplied thumbnails. */
 export const mobileApps: MobileApp[] = [
   {
-    name: 'App Name One',
-    tagline: 'PLACEHOLDER - one-line tagline.',
-    description: DESC,
-    imageSrc: '/placeholders/app-1.jpg',
+    name: 'The Golden Wrench Mobile',
+    tagline: 'WordPress website design and development',
+    url: 'https://goldenwrenchmobile.com/',
+    description:
+      'A WordPress website project for a mobile mechanic and roadside assistance business, hosted on Bluehost. Work included homepage structure, UI updates, navigation, calls to action, service sections, booking integration, and supporting brand materials.',
+    imageSrc: '/placeholders/golden-wrench.jpg',
+    imagePosition: '50% 50%',
+    accentColor: '#C9972B',
+    stats: [
+      { value: 'WordPress', label: 'Platform' },
+      { value: 'Elementor', label: 'Builder' },
+      { value: 'Bluehost', label: 'Hosting' },
+    ],
+    badge: 'Website Design',
+  },
+  {
+    name: 'Sundown, Whisks Up',
+    tagline: 'WordPress homepage revamp',
+    url: 'https://sdwhisksup.com/',
+    description:
+      'A WordPress website improvement project hosted on Bluehost. Work focused on the homepage layout, responsive design, content sections, forms, and integrations using Elementor, Spectra, and Yoast SEO, with ConvertKit support.',
+    imageSrc: '/placeholders/SDWHISKUPTHUMBNAIL.png',
     imagePosition: '50% 30%',
-    accentColor: '#2563EB',
-    stats: STATS,
-    badge: 'Badge',
-  },
-  {
-    name: 'App Name Two',
-    tagline: 'PLACEHOLDER - one-line tagline.',
-    description: DESC,
-    imageSrc: '/placeholders/app-2.jpg',
     accentColor: '#7C3AED',
-    stats: STATS,
-    badge: 'Badge',
+    stats: [
+      { value: 'WordPress', label: 'Platform' },
+      { value: 'Elementor', label: 'Builder' },
+      { value: 'Spectra', label: 'Blocks' },
+      { value: 'Yoast SEO', label: 'SEO' },
+      { value: 'ConvertKit', label: 'Email' },
+      { value: 'Bluehost', label: 'Hosting' },
+    ],
+    badge: 'Website Revamp',
   },
   {
-    name: 'App Name Three',
-    tagline: 'PLACEHOLDER - one-line tagline.',
-    description: DESC,
-    imageSrc: '/placeholders/app-3.jpg',
-    accentColor: '#16A34A',
-    stats: STATS,
-    badge: 'Badge',
+    name: 'Sun Up Growth in Motion',
+    tagline: 'Branding and digital content support',
+    url: 'https://sunupgrowthinmotion.com/',
+    description:
+      'A WordPress website and marketing support project hosted on Bluehost, using the Astra theme and Yoast SEO, with Calendly for scheduling. Work also included Canva brand guidelines, social media graphics, and website updates.',
+    imageSrc: '/placeholders/SUGMTHUMBNAIL.png',
+    imagePosition: '50% 30%',
+    accentColor: '#F0A322',
+    stats: [
+      { value: 'WordPress', label: 'Platform' },
+      { value: 'Astra Theme', label: 'Theme' },
+      { value: 'Yoast SEO', label: 'SEO' },
+      { value: 'Calendly', label: 'Scheduling' },
+      { value: 'Bluehost', label: 'Hosting' },
+    ],
+    badge: 'Website & Content',
   },
 ]
 
 export const webApps: AppProject[] = [
   {
-    name: 'Web App One',
-    tagline: 'PLACEHOLDER - one-line tagline.',
-    description: DESC,
+    name: 'Pacifica Mental Health',
+    tagline: 'Website content and performance support',
+    url: 'https://pacificamentalhealth.com/',
+    description:
+      'A Squarespace website support project hosted on GoDaddy, involving website content support, GA4 analytics, and Google Search Console reporting.',
+    imageSrc: '/placeholders/pmh.png',
+    imagePosition: '50% 50%',
     accentColor: '#0EA5E9',
-    stats: STATS,
-    badge: 'Badge',
-  },
-  {
-    name: 'Web App Two',
-    tagline: 'PLACEHOLDER - one-line tagline.',
-    description: DESC,
-    accentColor: '#EF4444',
-    stats: STATS,
-    badge: 'Badge',
-  },
-  {
-    name: 'Web App Three',
-    tagline: 'PLACEHOLDER - one-line tagline.',
-    description: DESC,
-    imageSrc: '/placeholders/project-3.jpg',
-    accentColor: '#0891B2',
-    stats: STATS,
-    badge: 'Badge',
-  },
-  {
-    name: 'Web App Four',
-    tagline: 'PLACEHOLDER - one-line tagline.',
-    description: DESC,
-    imageSrc: '/placeholders/project-4.jpg',
-    accentColor: '#F59E0B',
-    stats: STATS,
-    badge: 'Badge',
+    stats: [
+      { value: 'Squarespace', label: 'Platform' },
+      { value: 'GA4', label: 'Analytics' },
+      { value: 'GSC', label: 'Search Data' },
+      { value: 'GoDaddy', label: 'Hosting' },
+    ],
+    badge: 'Website Support',
   },
 ]

@@ -372,6 +372,11 @@
   animation-play-state: paused;
 }
 .bento__card:hover .bento__reviews-track { animation-play-state: running; }
+@media (prefers-reduced-motion: no-preference) {
+  .bento__card--projects .bento__reel-track,
+  .bento__card--ai .bento__chip-track,
+  .bento__card--quotes .bento__reviews-track { animation-play-state: running; }
+}
 .bento__review {
   display: flex;
   flex-direction: column;
