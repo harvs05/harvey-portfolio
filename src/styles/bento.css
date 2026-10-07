@@ -278,6 +278,54 @@
 
 /* Services: the five offers, title only. */
 .bento__card--services .bento__media { margin-top: clamp(4px, 0.7vh, 10px); }
+.bento__process {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2px;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+}
+.bento__process::before {
+  content: '';
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  left: 12px;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--orange), var(--line-strong));
+}
+.bento__process-step {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 1 1 0;
+  min-height: 0;
+  transition: transform var(--dur-med) var(--ease-spring);
+  transition-delay: calc(var(--i, 0) * 24ms);
+}
+.bento__card--services:hover .bento__process-step { transform: translateX(3px); }
+.bento__process-node {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 25px;
+  height: 25px;
+  border: 1px solid var(--orange);
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--navy);
+  font-size: 8px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 0 0 3px var(--paper);
+}
+.bento__process-copy { display: flex; flex-direction: column; min-width: 0; gap: 2px; line-height: 1.15; }
+.bento__process-copy strong { color: var(--navy); font-size: clamp(10.5px, 0.72vw, 12px); font-weight: 700; }
+.bento__process-copy > span { overflow: hidden; color: var(--muted); font-size: clamp(9px, 0.61vw, 10.5px); text-overflow: ellipsis; white-space: nowrap; }
 .bento__offers {
   display: flex;
   flex-direction: column;

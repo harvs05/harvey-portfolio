@@ -8,11 +8,6 @@ import {
   User,
   Wrench,
   Stack,
-  Globe,
-  Gear,
-  AddressBook,
-  PaintBrush,
-  VideoCamera,
   SealCheck,
   MapPin,
 } from '@/components/slab'
@@ -40,32 +35,11 @@ const PROJECT_SHOTS = PROJECT_ORDER
    SERVICES
    ========================================================= */
 
-const OFFERS = [
-  {
-    Icon: Globe,
-    title: 'WordPress Support',
-    note: 'Website updates, maintenance & troubleshooting',
-  },
-  {
-    Icon: PaintBrush,
-    title: 'Canva Graphic Design',
-    note: 'Social graphics, carousels & branded visuals',
-  },
-  {
-    Icon: Gear,
-    title: 'Website Updates',
-    note: 'Layouts, content, forms & integrations',
-  },
-  {
-    Icon: VideoCamera,
-    title: 'Content Support',
-    note: 'Social media, video & scheduling',
-  },
-  {
-    Icon: AddressBook,
-    title: 'Digital Support',
-    note: 'Reporting, organization & marketing tasks',
-  },
+const WORKFLOW_STEPS = [
+  { title: 'Brief', note: 'Goals & priorities' },
+  { title: 'Plan', note: 'Tasks & timing' },
+  { title: 'Support', note: 'Web, SEO, design & content' },
+  { title: 'Review', note: 'Refine & deliver' },
 ] as const
 
 /* =========================================================
@@ -335,56 +309,21 @@ export default function HomeBento() {
       >
         <CardHead
           Icon={Stack}
-          title="Services"
-          desc="Practical digital support for businesses and organizations."
+          title="How I Work"
+          desc="A clear process for website and digital support."
         />
 
-        <ul
-          className="bento__media bento__offers"
-          role="list"
-        >
-          {OFFERS.map(
-            (
-              { Icon, title, note },
-              index,
-            ) => (
-              <li
-                key={title}
-                className="bento__offer"
-                style={
-                  {
-                    '--i': index,
-                  } as React.CSSProperties
-                }
-              >
-                <span className="bento__offer-tile">
-                  <Icon
-                    size={15}
-                    weight="duotone"
-                    aria-hidden="true"
-                  />
-                </span>
-
-                <span className="bento__offer-text">
-                  <span className="bento__offer-title">
-                    {title}
-                  </span>
-
-                  <span className="bento__offer-note">
-                    {note}
-                  </span>
-                </span>
-
-                <span
-                  className="bento__offer-num"
-                  aria-hidden="true"
-                >
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-              </li>
-            ),
-          )}
-        </ul>
+        <ol className="bento__media bento__process" aria-label="My client-support process">
+          {WORKFLOW_STEPS.map(({ title, note }, index) => (
+            <li key={title} className="bento__process-step" style={{ '--i': index } as React.CSSProperties}>
+              <span className="bento__process-node" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+              <span className="bento__process-copy">
+                <strong>{title}</strong>
+                <span>{note}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
       </Link>
 
       {/* =====================================================
