@@ -76,6 +76,11 @@ export const tools: Tool[] = [
     iconPath: '/icons/openai.svg',
   },
 
+  {
+    name: 'Claude',
+    iconPath: '/icons/claude-ai-symbol.svg',
+  },
+
 ]
 
 export default function ToolsMarquee() {
