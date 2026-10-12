@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { SealCheck, CaretRight, Stack, Coffee } from '@/components/slab'
+import { SealCheck, CaretRight } from '@/components/slab'
 import { profile } from '@/data/profile'
 import QuickMenu from './QuickMenu'
 
@@ -48,8 +48,8 @@ export function HomeStats() {
 
 const TILES = [
   { n: '01', label: 'Projects', to: '/projects', title: 'Selected website projects', desc: 'Website design and support work.', img: '/placeholders/golden-wrench.jpg' },
-  { n: '02', label: 'Services', to: '/services', title: 'Website & digital support', desc: 'WordPress, Canva, and content support.', Icon: Stack },
-  { n: '03', label: 'Website Gallery', to: '/showcase', title: 'Responsive website previews', desc: 'See selected work on desktop and mobile.', Icon: Coffee, accent: true },
+  { n: '02', label: 'Services', to: '/services', title: 'Website & digital support', desc: 'WordPress, Canva, and content support.', img: '/graphics/social-design-mockup.png' },
+  { n: '03', label: 'Website Gallery', to: '/showcase', title: 'Responsive website previews', desc: 'See selected work on desktop and mobile.', img: '/placeholders/SDWHISKUPTHUMBNAIL.png', accent: true },
   { n: '04', label: 'Client Work', to: '/testimonials', title: 'Project notes', desc: 'A closer look at selected projects.', img: '/placeholders/pmh.png' },
   { n: '05', label: 'About', to: '/about', title: `Hi, I'm ${profile.firstName}.`, desc: 'WordPress Developer and Digital Designer.', img: profile.avatarSrc },
 ] as const

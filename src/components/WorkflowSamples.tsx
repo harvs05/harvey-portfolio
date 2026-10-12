@@ -20,10 +20,16 @@ import { mobileApps, webApps } from '@/data/projects'
  * the trigger on close - the same pattern as the other in-page previews.
  */
 
-type Sample = { src: string; label: string; url?: string }
+type Sample = { src: string; label: string; tagline: string; url?: string; description: string }
 
 const SAMPLES: Sample[] = [mobileApps[0], webApps[0], mobileApps[2], mobileApps[1]]
-  .flatMap((project) => project?.imageSrc ? [{ src: project.imageSrc, label: project.name, url: project.url }] : [])
+  .flatMap((project) => project?.imageSrc ? [{
+    src: project.imageSrc,
+    label: project.name,
+    tagline: project.tagline,
+    url: project.url,
+    description: project.description,
+  }] : [])
 
 const srcOf = (s: Sample) => s.src
 
@@ -129,6 +135,7 @@ export default function WorkflowSamples() {
               <div className="wfs__imgwrap">
                 <img className="wfs__full" src={srcOf(active)} alt={`${active.label} screenshot`} />
               </div>
+              <div className="wfs__case-study"><span>{active.tagline}</span><p>{active.description}</p></div>
               {active.url && <div className="wfs__visit"><a href={active.url} target="_blank" rel="noreferrer">Visit live website <span aria-hidden="true">↗</span></a></div>}
             </div>
           </div>,
