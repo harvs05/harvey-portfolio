@@ -64,11 +64,7 @@ export function HomeExplore() {
         {TILES.map((t) => (
           <li key={t.to}>
             <Link to={t.to} className={`htile${'accent' in t && t.accent ? ' htile--accent' : ''}`}>
-              {'img' in t ? (
-                <span className="htile__media"><img className="htile__img" src={t.img} alt="" loading="lazy" /></span>
-              ) : (
-                <span className="htile__media htile__glyph"><t.Icon size={52} weight="duotone" aria-hidden="true" /></span>
-              )}
+              <span className="htile__media"><img className="htile__img" src={t.img} alt="" loading="lazy" /></span>
               <span className="htile__body">
                 <span className="htile__n">{t.n} {t.label}</span>
                 <span className="htile__title">{t.title}</span>
