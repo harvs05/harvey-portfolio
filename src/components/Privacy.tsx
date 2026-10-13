@@ -28,13 +28,13 @@ export default function Privacy() {
           <p>This portfolio is operated by {profile.name}. This notice describes the contact form on this website.</p>
 
           <h2>What is collected</h2>
-          <p>The contact form asks for your name, email address, and a message about your project. Without a form endpoint, it opens your email application with a message addressed to {profile.email}. The portfolio does not send or store that message; you review and send it from your email application.</p>
+          <p>The contact form asks for your name, email address, and a message about your project. When submitted, the information is sent through the website's Vercel function and Resend email delivery service to {profile.email}. The portfolio does not keep submissions in a database.</p>
 
           <h2>How it is used</h2>
-          <p>If you send the prepared email, your information is used to respond to your inquiry. The message is handled by your email provider and the recipient's email provider.</p>
+          <p>Your information is used to respond to your inquiry. It is processed by Vercel and Resend to deliver the message, and is handled by the email providers involved.</p>
 
           <h2>How long it is kept</h2>
-          <p>The portfolio does not store contact form submissions. Emails you send are retained or deleted according to the email providers and account settings involved.</p>
+          <p>The portfolio does not store contact form submissions in a database. The email is retained or deleted according to the recipient's email account settings and the service providers' policies.</p>
 
           <h2>Contact</h2>
           <p>

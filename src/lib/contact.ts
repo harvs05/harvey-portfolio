@@ -1,21 +1,12 @@
-import { profile } from '@/data/profile'
-
 /**
  * Contact submission.
  *
- * Out of the box there is no backend: submitLead() opens the visitor's mail
- * client with a message addressed to profile.email (src/data/profile.ts).
- *
- * To wire a real backend (Formspree, a serverless function, a webhook...):
- *   1. Set VITE_CONTACT_ENDPOINT in .env.production to the URL that accepts
- *      a JSON POST of the Lead type below.
- *   2. Have it answer 2xx on success, or a non-2xx with { "error": "..." }
- *      and that sentence is shown to the visitor as-is.
- * With the variable unset the mail client path below is used instead.
+ * Contact submissions go to the same-origin Vercel function at /api/contact.
+ * The function delivers the message through Resend; its credentials stay on
+ * the server and are never exposed to the browser.
  */
 
-export const ENDPOINT: string = import.meta.env.VITE_CONTACT_ENDPOINT ?? ''
-export const RECIPIENT = profile.email
+export const ENDPOINT = '/api/contact'
 
 export const MAX_NAME = 80
 export const MAX_EMAIL = 254
@@ -44,7 +35,7 @@ export type Lead = {
   website: string
 }
 
-export type SubmitResult = { via: 'webhook' } | { via: 'mailto' }
+export type SubmitResult = { via: 'api' }
 
 /** Read, trim, cap and sanitise the four fields. Returns null if a required
  *  field is missing or the email does not look like one. */
@@ -61,27 +52,14 @@ export function readLead(data: FormData): Lead | null {
 export class SubmitError extends Error {}
 
 export async function submitLead(lead: Lead): Promise<SubmitResult> {
-  if (ENDPOINT) {
-    const res = await fetch(ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(lead),
-    })
-    if (!res.ok) {
-      const body = await res.json().catch(() => null)
-      throw new SubmitError(body?.error || `The server answered ${res.status}.`)
-    }
-    return { via: 'webhook' }
+  const res = await fetch(ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(lead),
+  })
+  if (!res.ok) {
+    const body = await res.json().catch(() => null)
+    throw new SubmitError(body?.error || `The server answered ${res.status}.`)
   }
-
-  if (!RECIPIENT) {
-    throw new SubmitError('The contact form is not configured yet. Please use the GitHub link to get in touch.');
-  }
-
-  const subject = `Project inquiry from ${lead.firstName} ${lead.lastName}`
-  const body = [`Name: ${lead.firstName} ${lead.lastName}`, `Email: ${lead.email}`, '', lead.message].join('\n')
-  // encodeURIComponent on every value blocks header injection (CR/LF) and
-  // parameter smuggling via & or ?.
-  window.location.href = `mailto:${encodeURIComponent(RECIPIENT)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
-  return { via: 'mailto' }
+  return { via: 'api' }
 }

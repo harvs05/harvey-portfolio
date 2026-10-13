@@ -13,8 +13,8 @@ import { readLead, submitLead, SubmitError, MAX_NAME, MAX_EMAIL, MAX_MESSAGE, ty
  * nothing here scrolls; the message box takes whatever height is left.
  *
  * Submission goes through lib/contact.ts, which is the one place a form
- * backend gets wired. Until it is, the same call opens the visitor's mail
- * client with the message laid out, and the success copy says so.
+ * server-side delivery endpoint. A successful submission is sent to Harvey's
+ * inbox without opening the visitor's email application.
  */
 
 type Status = { kind: 'idle' } | { kind: 'sending' } | { kind: 'error'; note: string } | { kind: 'sent'; via: SubmitResult['via'] }
@@ -128,12 +128,10 @@ export default function ContactGrid() {
                 <CheckCircle size={30} weight="fill" />
               </span>
               <h2 className="cgrid__done-title">
-                {status.via === 'webhook' ? 'Got it.' : 'Your mail app has it.'}
+                Got it.
               </h2>
               <p className="cgrid__done-body">
-                {status.via === 'webhook'
-                  ? 'Your message was submitted. I will review it and follow up with next steps.'
-                  : 'The message is ready in your mail app. Review it and press send to deliver it.'}
+                Your message was sent. I will review it and follow up with next steps.
               </p>
               <button type="button" className="cgrid__again" onClick={() => setStatus({ kind: 'idle' })}>
                 Write another
