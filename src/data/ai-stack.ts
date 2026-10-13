@@ -69,6 +69,11 @@ const CANVA: StackLogo = {
   name: 'Canva',
 }
 
+const FIGMA: StackLogo = {
+  src: '/icons/figma.svg',
+  name: 'Figma',
+}
+
 const PHOTOSHOP: StackLogo = {
   src: '/icons/adobe-photoshop.svg',
   name: 'Adobe Photoshop',
@@ -225,7 +230,7 @@ export const aiStack: StackNode = {
 
           Icon: FilmSlate,
 
-          logos: [CANVA, PHOTOSHOP],
+          logos: [CANVA, FIGMA, PHOTOSHOP],
 
           name: 'Social Media Graphics',
 
@@ -233,7 +238,7 @@ export const aiStack: StackNode = {
             'Creating branded graphics and visual content for social media platforms and marketing campaigns.',
 
           stack:
-            'Canva • Photoshop • Brand Guidelines • Social Media',
+            'Canva • Figma • Photoshop • Brand Guidelines • Social Media',
 
           status: 'Live',
         },
@@ -243,7 +248,7 @@ export const aiStack: StackNode = {
 
           Icon: Article,
 
-          logos: [CANVA, PHOTOSHOP],
+          logos: [CANVA, FIGMA, PHOTOSHOP],
 
           name: 'Carousel Design',
 
@@ -251,7 +256,7 @@ export const aiStack: StackNode = {
             'Designing clear, engaging carousel graphics that organize information into easy-to-follow visual slides.',
 
           stack:
-            'Canva • Photoshop • Social Media Content',
+            'Canva • Figma • Photoshop • Social Media Content',
 
           status: 'Live',
         },
@@ -261,7 +266,7 @@ export const aiStack: StackNode = {
 
           Icon: UsersThree,
 
-          logos: [CANVA, PHOTOSHOP],
+          logos: [CANVA, FIGMA, PHOTOSHOP],
 
           name: 'Brand Materials',
 
@@ -269,7 +274,7 @@ export const aiStack: StackNode = {
             'Creating branded materials such as business cards, brand guidelines, promotional graphics, and marketing assets.',
 
           stack:
-            'Canva • Photoshop • Brand Assets',
+            'Canva • Figma • Photoshop • Brand Assets',
 
           status: 'Live',
         },
@@ -423,7 +428,7 @@ export const aiStack: StackNode = {
 
           Icon: Sparkle,
 
-          logos: [CANVA, PHOTOSHOP, CAPCUT],
+          logos: [CANVA, FIGMA, PHOTOSHOP, CAPCUT],
 
           name: 'Creative Tools',
 
@@ -431,7 +436,7 @@ export const aiStack: StackNode = {
             'Using visual design and video editing tools to create professional marketing and social media content.',
 
           stack:
-            'Canva • Photoshop • CapCut',
+            'Canva • Figma • Photoshop • CapCut',
 
           status: 'Live',
         },

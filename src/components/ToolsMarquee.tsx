@@ -42,6 +42,11 @@ export const tools: Tool[] = [
   },
 
   {
+    name: 'Figma',
+    iconPath: '/icons/figma.svg',
+  },
+
+  {
     name: 'Adobe Photoshop',
     iconPath: '/icons/adobe-photoshop.svg',
   },

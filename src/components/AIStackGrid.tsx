@@ -157,6 +157,10 @@ export default function AIStackGrid() {
               src: '/icons/canva.svg',
             },
             {
+              name: 'Figma',
+              src: '/icons/figma.svg',
+            },
+            {
               name: 'Photoshop',
               src: '/icons/adobe-photoshop.svg',
             },
