@@ -38,7 +38,7 @@ export default function Privacy() {
 
           <h2>Contact</h2>
           <p>
-            Questions about this notice: <a href={`mailto:${profile.email}`}>{profile.email}</a> or <a href={profile.socials[0]?.href} target="_blank" rel="noopener noreferrer">GitHub profile</a>.
+            Questions about this notice: {profile.email} or <a href={profile.socials[0]?.href} target="_blank" rel="noopener noreferrer">GitHub profile</a>.
           </p>
         </div>
       </div>

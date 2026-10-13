@@ -104,10 +104,10 @@ export default function ContactGrid() {
           </ul>
 
           <div className="cgrid__direct">
-            {profile.email && <a className="cgrid__mail" href={`mailto:${profile.email}`}>
+            {profile.email && <span className="cgrid__mail">
               <EnvelopeSimple size={16} weight="fill" aria-hidden="true" />
               <span>{profile.email}</span>
-            </a>}
+            </span>}
             <ul className="cgrid__socials" role="list">
               {profile.socials.map((s) => (
                 <li key={s.label}>
